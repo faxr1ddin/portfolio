@@ -142,11 +142,6 @@ if (!reduce) {
   gsap.to('.glow-a', { x: '12vw', y: '8vh', duration: 14, ease: 'sine.inOut', yoyo: true, repeat: -1 });
   gsap.to('.glow-b', { x: '-10vw', y: '-10vh', duration: 16, ease: 'sine.inOut', yoyo: true, repeat: -1 });
 
-  /* project phones rise as the cards scroll into view */
-  $$('[data-rise]').forEach((el) =>
-    gsap.fromTo(el, { yPercent: 18 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: el.closest('.project'), start: 'top bottom', end: 'center 55%', scrub: true } }),
-  );
-
   /* timeline line draws itself */
   const fill = $('[data-tl-fill]');
   if (fill) gsap.to(fill, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '[data-timeline]', start: 'top 70%', end: 'bottom 70%', scrub: 0.4 } });
@@ -170,158 +165,22 @@ if (tiltEl && finePointer && !reduce) {
   });
 }
 
-/* ---------- live Quronim demo inside the project card ---------- */
-const MEMBERS = [
-  { n: 'Aziz', i: 'A', c: '#3b82f6' },
-  { n: 'Madina', i: 'M', c: '#ec4899' },
-  { n: 'Bilol', i: 'B', c: '#10b981' },
-  { n: 'Sevara', i: 'S', c: '#f59e0b' },
-  { n: 'Umar', i: 'U', c: '#8b5cf6' },
-  { n: 'Zarina', i: 'Z', c: '#ef4444' },
-];
-const RING_C = 2 * Math.PI * 42;
-
-class HatmSim {
-  root: HTMLElement;
-  cells: HTMLElement[];
-  ring: SVGCircleElement | null;
-  count: HTMLElement | null;
-  pct: HTMLElement | null;
-  feedText: HTMLElement | null;
-  feedDot: HTMLElement | null;
-  banner: HTMLElement | null;
-  bannerText: HTMLElement | null;
-  initial: { cls: string; badge: string; bg: string }[];
-  owner = new Map<number, number>();
-  timer = 0;
-  running = false;
-  steps = 0;
-
-  constructor(root: HTMLElement) {
-    this.root = root;
-    this.cells = $$('.juz', root);
-    this.ring = $('[data-sim-ring]', root) as SVGCircleElement | null;
-    this.count = $('[data-sim-count]', root);
-    this.pct = $('[data-sim-pct]', root);
-    this.feedText = $('[data-sim-feed-text]', root);
-    this.feedDot = $('.hl-feed-dot', root);
-    this.banner = $('[data-sim-banner]', root);
-    this.bannerText = $('[data-sim-banner-text]', root);
-    this.initial = this.cells.map((c) => {
-      const i = c.querySelector('i')!;
-      return { cls: c.className, badge: i.textContent ?? '', bg: i.style.background };
-    });
-    this.readOwners();
-  }
-  readOwners() {
-    this.owner.clear();
-    this.cells.forEach((c, k) => {
-      if (!c.classList.contains('reserved')) return;
-      const letter = c.querySelector('i')!.textContent;
-      this.owner.set(k, Math.max(0, MEMBERS.findIndex((m) => m.i === letter)));
-    });
-  }
-  done() {
-    return this.cells.filter((c) => c.classList.contains('done')).length;
-  }
-  render() {
-    const d = this.done();
-    if (this.ring) this.ring.style.strokeDashoffset = String(RING_C * (1 - d / 30));
-    if (this.count) this.count.textContent = String(d);
-    if (this.pct) this.pct.textContent = `${Math.round((d / 30) * 100)}%`;
-  }
-  feed(m: (typeof MEMBERS)[number], text: string) {
-    if (this.feedText) {
-      gsap.fromTo(this.feedText.parentElement, { y: 6, opacity: 0.2 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' });
-      this.feedText.textContent = text;
-    }
-    if (this.feedDot) {
-      this.feedDot.textContent = m.i;
-      this.feedDot.style.background = m.c;
-    }
-  }
-  notify(text: string) {
-    if (!this.banner || !this.bannerText) return;
-    this.bannerText.textContent = text;
-    gsap
-      .timeline()
-      .fromTo(this.banner, { yPercent: -140, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.7, ease: 'back.out(1.4)' })
-      .to(this.banner, { yPercent: -140, opacity: 0, duration: 0.5, ease: 'power3.in' }, '+=2.1');
-  }
-  pop(c: HTMLElement) {
-    c.classList.add('pop');
-    setTimeout(() => c.classList.remove('pop'), 380);
-  }
-  reset() {
-    this.cells.forEach((c, k) => {
-      c.className = this.initial[k].cls;
-      const i = c.querySelector('i')!;
-      i.textContent = this.initial[k].badge;
-      i.style.background = this.initial[k].bg;
-    });
-    this.readOwners();
-    this.render();
-  }
-  step() {
-    const d = this.done();
-    if (d >= 30) {
-      this.reset();
-      return;
-    }
-    const reserved = [...this.owner.keys()];
-    const free = this.cells.map((c, k) => k).filter((k) => !this.cells[k].className.match(/done|reserved/));
-    const complete = reserved.length && (free.length === 0 || Math.random() < 0.55);
-    if (complete) {
-      const k = reserved[Math.floor(Math.random() * reserved.length)];
-      const m = MEMBERS[this.owner.get(k)!];
-      this.owner.delete(k);
-      const c = this.cells[k];
-      c.classList.remove('reserved');
-      c.classList.add('done');
-      this.pop(c);
-      this.render();
-      const nd = this.done();
-      if (nd === 30) {
-        this.feed(m, 'Hatm #3 complete — all 30 Juz 🎉');
-        this.notify('Hatm #3 complete 🎉 Barakallahu feekum!');
-      } else {
-        this.feed(m, `${m.n} finished Juz ${k + 1}`);
-        if (++this.steps % 3 === 0) this.notify(`${m.n} finished Juz ${k + 1} · ${nd}/30`);
-      }
-    } else if (free.length) {
-      const k = free[Math.floor(Math.random() * free.length)];
-      const mi = Math.floor(Math.random() * MEMBERS.length);
-      const m = MEMBERS[mi];
-      this.owner.set(k, mi);
-      const c = this.cells[k];
-      const i = c.querySelector('i')!;
-      i.textContent = m.i;
-      i.style.background = m.c;
-      c.classList.add('reserved');
-      this.pop(c);
-      this.feed(m, `${m.n} reserved Juz ${k + 1}`);
-    }
-  }
-  loop = () => {
-    if (!this.running) return;
-    if (document.visibilityState === 'visible') this.step();
-    this.timer = window.setTimeout(this.loop, this.done() >= 30 ? 3200 : 1500);
-  };
-  start() {
-    if (this.running || reduce) return;
-    this.running = true;
-    this.timer = window.setTimeout(this.loop, 900);
-  }
-  stop() {
-    this.running = false;
-    clearTimeout(this.timer);
-  }
+/* ---------- screenshot lightbox ---------- */
+const lightbox = $<HTMLDialogElement>('#lightbox');
+if (lightbox) {
+  const img = lightbox.querySelector('img')!;
+  $$('[data-full]').forEach((b) =>
+    b.addEventListener('click', () => {
+      img.src = b.dataset.full!;
+      img.alt = b.dataset.alt ?? '';
+      lightbox.showModal();
+      lenis?.stop();
+      if (!reduce) gsap.fromTo(img, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: 'expo.out' });
+    }),
+  );
+  lightbox.addEventListener('click', () => lightbox.close());
+  lightbox.addEventListener('close', () => lenis?.start());
 }
-
-$$('[data-sim="live"]').forEach((el) => {
-  const sim = new HatmSim(el);
-  ScrollTrigger.create({ trigger: el.closest('.project') ?? el, start: 'top bottom', end: 'bottom top', onToggle: (s) => (s.isActive ? sim.start() : sim.stop()) });
-});
 
 /* ---------- copy email ---------- */
 const toast = $('.toast');

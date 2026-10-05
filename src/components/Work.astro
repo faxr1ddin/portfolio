@@ -1,10 +1,20 @@
 ---
-import { Image } from 'astro:assets';
-import { projects } from '../data/profile';
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { projects, quronimShots } from '../data/profile';
 import miftahul from '../assets/icons/miftahul.png';
 import Icon from './Icon.astro';
-import Phone from './Phone.astro';
-import HatmLive from './HatmLive.astro';
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/quronim/*.jpg', { eager: true });
+const shots = await Promise.all(
+  Object.keys(files)
+    .sort()
+    .map(async (k, i) => {
+      const src = files[k].default;
+      const large = await getImage({ src, width: 720, format: 'webp' });
+      return { src, large: large.src, alt: quronimShots[i] ?? 'Quronim screenshot' };
+    }),
+);
 ---
 
 <section class="section" id="work">
@@ -17,23 +27,32 @@ import HatmLive from './HatmLive.astro';
       {
         projects.map((p) => (
           <article class="project card" data-reveal>
-            <div class="cover" style={`--c:${p.color}`}>
+            <div class:list={['cover', p.cover]} style={`--c:${p.color}`}>
               <span class="badge">
                 {p.link ? <Icon name="apple" /> : <span class="badge-dot" />}
                 {p.badge}
               </span>
-              <div class="phone" data-rise>
-                <Phone label={`${p.name} app preview`}>
-                  {p.screen === 'quronim' ? (
-                    <HatmLive />
-                  ) : (
-                    <div class="splash">
-                      <Image src={miftahul} alt="" width={240} height={240} />
-                      <b>MiftahulQur’an</b>
-                    </div>
-                  )}
-                </Phone>
-              </div>
+              {p.cover === 'gallery' ? (
+                <div class="strip" data-strip>
+                  <div class="strip-track">
+                    {[0, 1].map((copy) =>
+                      shots.map((s) => (
+                        <button
+                          class="shot"
+                          data-full={s.large}
+                          data-alt={s.alt}
+                          aria-label={`Open screenshot: ${s.alt}`}
+                          aria-hidden={copy === 1 ? 'true' : undefined}
+                          tabindex={copy === 1 ? -1 : undefined}>
+                          <Image src={s.src} alt={copy === 0 ? s.alt : ''} width={150} densities={[1, 2]} loading="eager" decoding="async" />
+                        </button>
+                      )),
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <Image src={miftahul} alt={`${p.name} app icon`} width={128} height={128} class="cover-icon" />
+              )}
             </div>
             <div class="body">
               <h3>{p.name}</h3>
@@ -62,6 +81,11 @@ import HatmLive from './HatmLive.astro';
       }
     </div>
   </div>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Screenshot">
+    <img alt="" />
+    <button class="lb-close" aria-label="Close">✕</button>
+  </dialog>
 </section>
 
 <style>
@@ -75,17 +99,28 @@ import HatmLive from './HatmLive.astro';
     flex-direction: column;
     overflow: hidden;
   }
-  .project:hover {
-    transform: translateY(-6px);
-  }
   .cover {
     position: relative;
-    height: 300px;
+    height: 320px;
     overflow: hidden;
+    border-bottom: 1px solid var(--line);
     background:
       radial-gradient(70% 90% at 50% 100%, color-mix(in srgb, var(--c) 90%, white 10%), transparent 75%),
       linear-gradient(180deg, rgba(255, 255, 255, 0.02), color-mix(in srgb, var(--c) 35%, transparent));
-    border-bottom: 1px solid var(--line);
+  }
+  .cover.icon {
+    display: grid;
+    place-items: center;
+  }
+  .cover :global(.cover-icon) {
+    width: 120px;
+    height: 120px;
+    border-radius: 28px;
+    box-shadow: 0 24px 50px -16px rgba(0, 0, 0, 0.6);
+    transition: transform 0.7s var(--ease-out);
+  }
+  .project:hover .cover :global(.cover-icon) {
+    transform: scale(1.08) rotate(-4deg);
   }
   .badge {
     position: absolute;
@@ -103,47 +138,58 @@ import HatmLive from './HatmLive.astro';
     font-size: 12.5px;
     font-weight: 600;
   }
+  .badge :global(svg) {
+    width: 13px;
+  }
   .badge-dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: var(--accent-2);
   }
-  .badge :global(svg) {
-    width: 13px;
-  }
-  .phone {
-    position: absolute;
-    left: 50%;
-    top: 44px;
-    width: 220px;
-    margin-left: -110px;
-    transition: transform 0.7s var(--ease-out);
-  }
-  .project:hover .phone {
-    transform: translateY(-10px);
-  }
-  .splash {
+
+  /* screenshot strip: slowly scrolls, pauses on hover */
+  .strip {
     position: absolute;
     inset: 0;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding-top: 30cqw;
-    gap: 6cqw;
-    background: #cfc6b0;
-    color: #1f2a3a;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   }
-  .splash :global(img) {
-    width: 46cqw;
-    height: 46cqw;
-    border-radius: 11cqw;
+  .strip-track {
+    display: flex;
+    gap: 14px;
+    padding: 46px 0 18px;
+    width: max-content;
+    animation: strip 36s linear infinite;
   }
-  .splash b {
-    font-size: 7cqw;
-    letter-spacing: -0.02em;
+  .strip:hover .strip-track,
+  .strip:focus-within .strip-track {
+    animation-play-state: paused;
   }
+  @keyframes strip {
+    to {
+      transform: translateX(calc(-50% - 7px));
+    }
+  }
+  .shot {
+    flex: none;
+    width: 118px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 16px 30px -14px rgba(0, 0, 0, 0.7);
+    transition: transform 0.4s var(--ease-out);
+    cursor: zoom-in;
+  }
+  .shot:hover {
+    transform: translateY(-6px) scale(1.04);
+  }
+  .shot :global(img) {
+    width: 100%;
+    height: auto;
+  }
+
   .body {
     display: flex;
     flex-direction: column;
@@ -204,9 +250,55 @@ import HatmLive from './HatmLive.astro';
     width: 15px;
     opacity: 0.6;
   }
+
+  .lightbox {
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 24px;
+    border: 0;
+    background: transparent;
+  }
+  .lightbox[open] {
+    display: grid;
+    place-items: center;
+  }
+  .lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(6px);
+  }
+  .lightbox img {
+    max-width: min(420px, 100%);
+    max-height: calc(100vh - 48px);
+    width: auto;
+    height: auto;
+    border-radius: 22px;
+    box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8);
+  }
+  .lb-close {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 16px;
+  }
   @media (min-width: 860px) {
     .grid {
       grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .strip {
+      overflow-x: auto;
+    }
+    .strip-track {
+      animation: none;
     }
   }
 </style>

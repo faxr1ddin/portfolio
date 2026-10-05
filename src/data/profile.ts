@@ -58,7 +58,7 @@ export const skills = [
 
 export type Project = {
   name: string;
-  screen: 'quronim' | 'miftahul';
+  cover: 'gallery' | 'icon';
   color: string;
   badge: string;
   tagline: string;
@@ -71,18 +71,18 @@ export type Project = {
 export const projects: Project[] = [
   {
     name: 'Quronim',
-    screen: 'quronim',
+    cover: 'gallery',
     color: '#16305c',
     badge: 'On the App Store',
-    tagline: 'Read the Qur’an together, in real time',
-    text: 'A group app for Qur’an reading and Zikr. Each member picks a part, marks it done, and everyone sees the progress live.',
-    points: ['Core iOS screens in SwiftUI', 'Whole backend: NestJS + PostgreSQL', 'Live updates & push notifications'],
+    tagline: 'Read, complete and memorize the Qur’an — together',
+    text: 'Read with tajweed, share the 30 juz in a group khatm, count dhikr together and watch your hifz grow.',
+    points: ['Core iOS screens in SwiftUI', 'Whole backend: NestJS + PostgreSQL', 'Live group progress & push notifications'],
     tags: ['Swift', 'SwiftUI', 'Combine', 'NestJS', 'PostgreSQL', 'Socket.io'],
     link: { label: 'App Store', href: 'https://apps.apple.com/uz/app/quronim/id6761808860' },
   },
   {
     name: 'MiftahulQur’an',
-    screen: 'miftahul',
+    cover: 'icon',
     color: '#cfc6b0',
     badge: 'Team project',
     tagline: 'A structured way to read the Qur’an',
@@ -90,6 +90,16 @@ export const projects: Project[] = [
     points: ['Feature development with the team', 'Refactoring for clean, maintainable code', 'Consistent UI across the app'],
     tags: ['Swift', 'UIKit', 'Core Data', 'CocoaPods'],
   },
+];
+
+// Captions for the Quronim screenshots in src/assets/quronim (matched by file order)
+export const quronimShots = [
+  'Read the Qur’an with tajweed',
+  'Complete the Qur’an together',
+  'Count your dhikr with every tap',
+  'Watch your hifz grow',
+  'Pick a juz and mark it done',
+  'Join a khatm in one tap',
 ];
 
 export const experience = [
