@@ -1,0 +1,132 @@
+---
+import { experience } from '../data/profile';
+---
+
+<section class="section" id="experience">
+  <div class="container">
+    <span class="kicker" data-reveal>Career</span>
+    <h2 class="title" data-split>Experience</h2>
+    <p class="lead" data-reveal>From an iOS course to an app on the App Store.</p>
+
+    <div class="tl" data-timeline>
+      <span class="line" aria-hidden="true"><span class="fill" data-tl-fill></span></span>
+      <ol>
+        {
+          experience.map((e) => (
+            <li data-reveal data-tl-item>
+              <span class="node" aria-hidden="true" />
+              <div class="item card">
+                <div class="head">
+                  <h3>{e.title}</h3>
+                  <span class="when">{e.when}</span>
+                </div>
+                <div class="org">
+                  <b>{e.org}</b> · {e.place}
+                  {e.tag && <span class="tag">{e.tag}</span>}
+                </div>
+                <p>{e.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tl {
+    position: relative;
+    margin-top: 40px;
+    padding-left: 32px;
+  }
+  .line {
+    position: absolute;
+    left: 7px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--line);
+  }
+  .fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(var(--accent-2), var(--accent));
+    transform-origin: top;
+    transform: scaleY(0);
+  }
+  ol {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    position: relative;
+  }
+  .node {
+    position: absolute;
+    left: -32px;
+    top: 24px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--line-2);
+    background: var(--bg);
+    transition: border-color 0.4s, background 0.4s, box-shadow 0.4s;
+  }
+  li.is-on .node {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 5px rgba(139, 124, 255, 0.18);
+  }
+  .item {
+    padding: 20px 22px;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 16px;
+  }
+  h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+  .when {
+    font-size: 13.5px;
+    color: var(--accent-2);
+    font-weight: 500;
+  }
+  .org {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+  .org b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .tag {
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: rgba(52, 211, 153, 0.12);
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  p {
+    margin: 10px 0 0;
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+</style>

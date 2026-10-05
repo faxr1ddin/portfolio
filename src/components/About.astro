@@ -1,0 +1,205 @@
+---
+import { about, profile } from '../data/profile';
+import Icon from './Icon.astro';
+---
+
+<section class="section" id="about">
+  <div class="container">
+    <span class="kicker" data-reveal>About</span>
+    <h2 class="title" data-split>{about.title}</h2>
+
+    <div class="grid">
+      <div class="photo card" data-reveal>
+        <div class="photo-inner">
+          {
+            profile.photo ? (
+              <img src={profile.photo} alt={`Portrait of ${profile.name}`} loading="lazy" />
+            ) : (
+              <span class="mono" aria-hidden="true">FM</span>
+            )
+          }
+        </div>
+        <div class="photo-bar">
+          <span><Icon name="map-pin" />{profile.location}</span>
+          <span class="avail"><span class="dot"></span>Available</span>
+        </div>
+      </div>
+
+      <div class="text">
+        {about.text.map((t) => <p data-reveal>{t}</p>)}
+        <div class="edu card" data-reveal>
+          <span class="edu-icon"><Icon name="cap" /></span>
+          <div>
+            <b>{about.education.title}</b>
+            <small>{about.education.sub}</small>
+          </div>
+          <span class="edu-when">{about.education.when}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="features">
+      {
+        about.cards.map((c) => (
+          <div class="feature card" data-reveal>
+            <span class="f-icon">
+              <Icon name={c.icon} />
+            </span>
+            <h3>{c.title}</h3>
+            <p>{c.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 32px;
+    margin-top: 40px;
+    align-items: start;
+  }
+  .photo {
+    padding: 10px;
+    max-width: 380px;
+  }
+  .photo-inner {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 4.4;
+    border-radius: 16px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(139, 124, 255, 0.55), transparent 55%),
+      radial-gradient(circle at 80% 90%, rgba(79, 70, 229, 0.6), transparent 60%), #13131a;
+  }
+  .photo-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .mono {
+    font-size: clamp(5rem, 14vw, 7.5rem);
+    font-weight: 800;
+    letter-spacing: -0.08em;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .photo-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 8px 4px;
+    font-size: 13.5px;
+  }
+  .photo-bar span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .photo-bar :global(svg) {
+    width: 15px;
+    color: var(--ink-mute);
+  }
+  .avail {
+    color: var(--green);
+    font-weight: 500;
+  }
+  .text p {
+    margin: 0 0 16px;
+    font-size: 1.06rem;
+    color: var(--ink-soft);
+  }
+  .text p:first-child {
+    color: var(--ink);
+    font-size: 1.15rem;
+  }
+  .edu {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 24px;
+    padding: 18px;
+  }
+  .edu-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(139, 124, 255, 0.14);
+    color: var(--accent-2);
+    flex: none;
+  }
+  .edu-icon :global(svg) {
+    width: 22px;
+  }
+  .edu b {
+    display: block;
+  }
+  .edu small {
+    color: var(--ink-mute);
+    font-size: 13.5px;
+  }
+  .edu-when {
+    margin-left: auto;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: rgba(139, 124, 255, 0.14);
+    color: var(--accent-2);
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .features {
+    display: grid;
+    gap: 12px;
+    margin-top: 40px;
+  }
+  .feature {
+    padding: 22px;
+  }
+  .feature:hover {
+    transform: translateY(-4px);
+  }
+  .f-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    border: 1px solid var(--line-2);
+    color: var(--accent-2);
+  }
+  .f-icon :global(svg) {
+    width: 19px;
+  }
+  .feature h3 {
+    margin: 16px 0 6px;
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+  .feature p {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+  @media (min-width: 640px) {
+    .features {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 900px) {
+    .grid {
+      grid-template-columns: 340px 1fr;
+      gap: 56px;
+    }
+  }
+  @media (min-width: 1040px) {
+    .features {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

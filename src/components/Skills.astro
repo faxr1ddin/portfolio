@@ -1,0 +1,60 @@
+---
+import { skills } from '../data/profile';
+---
+
+<section class="section" id="skills">
+  <div class="container">
+    <span class="kicker" data-reveal>Toolkit</span>
+    <h2 class="title" data-split>Skills & technologies</h2>
+    <p class="lead" data-reveal>What I use to design, build and ship iOS apps.</p>
+
+    <div class="grid">
+      {
+        skills.map((g) => (
+          <div class="group card" data-reveal>
+            <h3>{g.group}</h3>
+            <div class="items">
+              {g.items.map((t) => (
+                <span class="chip">{t}</span>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 12px;
+    margin-top: 40px;
+  }
+  .group {
+    padding: 20px;
+  }
+  h3 {
+    margin: 0 0 14px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  @media (min-width: 640px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1000px) {
+    .grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,283 @@
+---
+import { profile, stats } from '../data/profile';
+import Icon from './Icon.astro';
+
+// Code card — each entry is one line of pre-highlighted Swift.
+const code = [
+  '<span class="c">// shipped to the App Store</span>',
+  '<span class="k">struct</span> <span class="t">Faxriddin</span>: <span class="t">iOSDeveloper</span> {',
+  '',
+  '  <span class="k">let</span> stack = [',
+  '    <span class="s">"Swift"</span>, <span class="s">"SwiftUI"</span>,',
+  '    <span class="s">"UIKit"</span>, <span class="s">"Combine"</span>, <span class="s">"NestJS"</span>,',
+  '  ]',
+  '',
+  '  <span class="k">func</span> <span class="f">ship</span>() -> <span class="t">App</span> {',
+  '    .<span class="m">appStore</span>',
+  '  }',
+  '}',
+];
+---
+
+<section class="hero" id="top">
+  <div class="container grid">
+    <div class="copy">
+      <div class="who" data-hero>
+        <div class="avatar">
+          {profile.photo ? <img src={profile.photo} alt="" width="56" height="56" /> : <span>FM</span>}
+        </div>
+        <span class="status"><span class="dot"></span>Available for new opportunities</span>
+      </div>
+
+      <h1 data-split>
+        <span class="gradient">{profile.firstName}</span><br />
+        {profile.lastName}
+      </h1>
+
+      <p class="role" data-hero><Icon name="device" />{profile.role}</p>
+      <p class="intro" data-hero>{profile.intro}</p>
+
+      <div class="ctas" data-hero>
+        <a href="#work" class="btn btn-primary">View my work <Icon name="arrow-down" /></a>
+        <a href={profile.resume} class="btn btn-ghost" target="_blank" rel="noopener"><Icon name="download" />Download Résumé</a>
+      </div>
+      <p class="loc" data-hero><Icon name="map-pin" />{profile.location}</p>
+    </div>
+
+    <div class="code-wrap" data-hero>
+      <div class="code card" data-tilt>
+        <div class="code-bar">
+          <span class="lights"><i></i><i></i><i></i></span>
+          <span class="file">Developer.swift</span>
+        </div>
+        <pre><code>{code.map((l) => <span class="line" set:html={l || ' '} />)}<span class="caret"></span></code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <ul class="stats">
+      {
+        stats.map((s) => (
+          <li class="card" data-stat>
+            <b><span data-count={s.value}>{s.value}</span>{s.suffix}</b>
+            <span class="stat-label">{s.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: 132px 0 0;
+  }
+  .grid {
+    display: grid;
+    gap: 56px;
+    align-items: center;
+  }
+  .who {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .avatar {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  h1 {
+    margin: 28px 0 0;
+    font-size: clamp(2.8rem, 7.4vw, 5.2rem);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+  }
+  .role {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 22px 0 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-2);
+  }
+  .role :global(svg) {
+    width: 20px;
+  }
+  .intro {
+    max-width: 480px;
+    margin: 12px 0 0;
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .loc {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 26px 0 0;
+    font-size: 14px;
+    color: var(--ink-mute);
+  }
+  .loc :global(svg) {
+    width: 16px;
+  }
+
+  .code-wrap {
+    perspective: 1200px;
+  }
+  .code {
+    max-width: 460px;
+    margin: 0 auto;
+    background: rgba(17, 17, 24, 0.75);
+    box-shadow: 0 40px 80px -30px rgba(91, 75, 219, 0.45);
+    transform-style: preserve-3d;
+  }
+  .code-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .lights {
+    display: flex;
+    gap: 7px;
+  }
+  .lights i {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+  .lights i:nth-child(2) {
+    background: #febc2e;
+  }
+  .lights i:nth-child(3) {
+    background: #28c840;
+  }
+  .file {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ink-mute);
+  }
+  pre {
+    margin: 0;
+    padding: 20px 22px 24px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: clamp(12px, 1.5vw, 14px);
+    line-height: 1.75;
+    color: #e4e4e7;
+  }
+  code {
+    position: relative;
+    display: block;
+  }
+  .line {
+    display: block;
+    white-space: pre;
+  }
+  .caret {
+    display: inline-block;
+    width: 8px;
+    height: 1.1em;
+    margin-left: 2px;
+    vertical-align: -2px;
+    background: var(--accent);
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  pre :global(.c) {
+    color: #6b7280;
+    font-style: italic;
+  }
+  pre :global(.k) {
+    color: #ff7ab2;
+  }
+  pre :global(.t) {
+    color: #7dd3fc;
+  }
+  pre :global(.s) {
+    color: #fca5a5;
+  }
+  pre :global(.f) {
+    color: #86efac;
+  }
+  pre :global(.m) {
+    color: var(--accent-2);
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 72px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .stats li {
+    padding: 22px 16px;
+    text-align: center;
+  }
+  .stats li:hover {
+    transform: translateY(-4px);
+  }
+  .stats b {
+    display: block;
+    font-size: clamp(1.8rem, 3.6vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .stat-label {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+  }
+  @media (min-width: 760px) {
+    .stats {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  @media (min-width: 960px) {
+    .grid {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+  }
+</style>

@@ -1,0 +1,212 @@
+---
+import { Image } from 'astro:assets';
+import { projects } from '../data/profile';
+import miftahul from '../assets/icons/miftahul.png';
+import Icon from './Icon.astro';
+import Phone from './Phone.astro';
+import HatmLive from './HatmLive.astro';
+---
+
+<section class="section" id="work">
+  <div class="container">
+    <span class="kicker" data-reveal>Work</span>
+    <h2 class="title" data-split>Selected projects</h2>
+    <p class="lead" data-reveal>Apps I’ve designed, built and shipped to the App Store.</p>
+
+    <div class="grid">
+      {
+        projects.map((p) => (
+          <article class="project card" data-reveal>
+            <div class="cover" style={`--c:${p.color}`}>
+              <span class="badge">
+                {p.link ? <Icon name="apple" /> : <span class="badge-dot" />}
+                {p.badge}
+              </span>
+              <div class="phone" data-rise>
+                <Phone label={`${p.name} app preview`}>
+                  {p.screen === 'quronim' ? (
+                    <HatmLive />
+                  ) : (
+                    <div class="splash">
+                      <Image src={miftahul} alt="" width={240} height={240} />
+                      <b>MiftahulQur’an</b>
+                    </div>
+                  )}
+                </Phone>
+              </div>
+            </div>
+            <div class="body">
+              <h3>{p.name}</h3>
+              <p class="tagline">{p.tagline}</p>
+              <p class="text">{p.text}</p>
+              <ul class="points">
+                {p.points.map((pt) => (
+                  <li>{pt}</li>
+                ))}
+              </ul>
+              <div class="tags">
+                {p.tags.map((t) => (
+                  <span class="chip">{t}</span>
+                ))}
+              </div>
+              {p.link && (
+                <a class="btn btn-ghost store" href={p.link.href} target="_blank" rel="noopener">
+                  <Icon name="apple" />
+                  {p.link.label}
+                  <Icon name="arrow-up-right" />
+                </a>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 20px;
+    margin-top: 40px;
+  }
+  .project {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .project:hover {
+    transform: translateY(-6px);
+  }
+  .cover {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 90% at 50% 100%, color-mix(in srgb, var(--c) 90%, white 10%), transparent 75%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02), color-mix(in srgb, var(--c) 35%, transparent));
+    border-bottom: 1px solid var(--line);
+  }
+  .badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(9, 9, 11, 0.7);
+    border: 1px solid var(--line-2);
+    backdrop-filter: blur(8px);
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent-2);
+  }
+  .badge :global(svg) {
+    width: 13px;
+  }
+  .phone {
+    position: absolute;
+    left: 50%;
+    top: 44px;
+    width: 220px;
+    margin-left: -110px;
+    transition: transform 0.7s var(--ease-out);
+  }
+  .project:hover .phone {
+    transform: translateY(-10px);
+  }
+  .splash {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 30cqw;
+    gap: 6cqw;
+    background: #cfc6b0;
+    color: #1f2a3a;
+  }
+  .splash :global(img) {
+    width: 46cqw;
+    height: 46cqw;
+    border-radius: 11cqw;
+  }
+  .splash b {
+    font-size: 7cqw;
+    letter-spacing: -0.02em;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 26px;
+  }
+  h3 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .tagline {
+    margin: 2px 0 0;
+    color: var(--accent-2);
+    font-weight: 500;
+  }
+  .text {
+    margin: 14px 0 14px;
+    color: var(--ink-soft);
+  }
+  .points {
+    display: grid;
+    gap: 7px;
+    margin: 0 0 20px;
+    padding: 0;
+    list-style: none;
+    font-size: 15px;
+  }
+  .points li {
+    position: relative;
+    padding-left: 18px;
+  }
+  .points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+  }
+  .store {
+    align-self: flex-start;
+    margin-top: 20px;
+    height: 42px;
+    font-size: 14px;
+  }
+  .store :global(svg:last-child) {
+    width: 15px;
+    opacity: 0.6;
+  }
+  @media (min-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

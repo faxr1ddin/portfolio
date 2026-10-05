@@ -1,0 +1,174 @@
+---
+import { profile } from '../data/profile';
+import Icon from './Icon.astro';
+
+const items = [
+  { href: '#about', label: 'About' },
+  { href: '#skills', label: 'Skills' },
+  { href: '#work', label: 'Work' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#contact', label: 'Contact' },
+];
+---
+
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#top" class="brand">
+      <span class="logo">F</span>
+      <span class="brand-name">{profile.firstName}<span>.dev</span></span>
+    </a>
+    <nav class="links" aria-label="Sections">
+      <span class="pill" aria-hidden="true"></span>
+      {items.map((i) => <a href={i.href} data-nav={i.href.slice(1)}>{i.label}</a>)}
+    </nav>
+    <div class="end">
+      <a class="btn btn-white cv" href={profile.resume} target="_blank" rel="noopener"><Icon name="download" />Résumé</a>
+      <button class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
+    </div>
+  </div>
+  <nav class="menu" id="menu" aria-label="Mobile" hidden>
+    {items.map((i) => <a href={i.href}>{i.label}</a>)}
+  </nav>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    padding: 12px 0;
+    transition: background 0.4s, border-color 0.4s;
+    border-bottom: 1px solid transparent;
+  }
+  .nav.is-scrolled {
+    background: rgba(9, 9, 11, 0.7);
+    backdrop-filter: blur(16px) saturate(1.5);
+    -webkit-backdrop-filter: blur(16px) saturate(1.5);
+    border-color: var(--line);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .logo {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+    font-weight: 800;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .brand:hover .logo {
+    transform: rotate(-10deg) scale(1.06);
+  }
+  .brand-name span {
+    color: var(--ink-mute);
+    font-weight: 500;
+  }
+  .links {
+    position: relative;
+    display: none;
+    padding: 4px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .links a {
+    position: relative;
+    z-index: 1;
+    padding: 7px 15px;
+    border-radius: 999px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    transition: color 0.3s;
+  }
+  .links a:hover,
+  .links a.is-active {
+    color: var(--ink);
+  }
+  .pill {
+    position: absolute;
+    top: 4px;
+    left: 0;
+    height: calc(100% - 8px);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    opacity: 0;
+    transition: transform 0.5s var(--ease-out), width 0.5s var(--ease-out), opacity 0.3s;
+  }
+  .end {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cv {
+    height: 40px;
+    padding: 0 16px;
+    font-size: 14px;
+  }
+  .menu-btn {
+    display: grid;
+    place-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+  }
+  .menu-btn span {
+    width: 16px;
+    height: 1.5px;
+    background: var(--ink);
+    transition: transform 0.4s var(--ease-out);
+  }
+  .menu-btn[aria-expanded='true'] span:first-child {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+  .menu-btn[aria-expanded='true'] span:last-child {
+    transform: translateY(-3.25px) rotate(-45deg);
+  }
+  .menu {
+    display: grid;
+    margin: 12px var(--gutter) 0;
+    padding: 8px;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: rgba(18, 18, 22, 0.96);
+  }
+  .menu[hidden] {
+    display: none;
+  }
+  .menu a {
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+  .menu a:hover {
+    background: var(--surface-2);
+  }
+  @media (max-width: 480px) {
+    .cv {
+      display: none;
+    }
+  }
+  @media (min-width: 900px) {
+    .links {
+      display: flex;
+    }
+    .menu-btn,
+    .menu {
+      display: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,155 @@
+---
+import { profile } from '../data/profile';
+import Icon from './Icon.astro';
+
+const cards = [
+  { icon: 'mail', label: 'Email', value: profile.email, href: `mailto:${profile.email}` },
+  { icon: 'phone', label: 'Phone', value: profile.phone, href: profile.phoneHref },
+  { icon: 'linkedin', label: 'LinkedIn', value: 'Connect with me', href: profile.links.linkedin },
+  { icon: 'github', label: 'GitHub', value: '@faxr1ddin', href: profile.links.github },
+  { icon: 'upwork', label: 'Upwork', value: 'Hire me on Upwork', href: profile.links.upwork },
+];
+---
+
+<section class="section" id="contact">
+  <div class="container">
+    <div class="box card" data-reveal>
+      <span class="kicker">Get in touch</span>
+      <h2 class="title" data-split>Let’s build <span class="gradient">something great</span></h2>
+      <p class="lead">Have an app idea or a role to fill? I’m open to full‑time, contract and freelance work.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href={`mailto:${profile.email}`}><Icon name="mail" />Email me</a>
+        <button class="btn btn-ghost" data-copy={profile.email}><Icon name="copy" />Copy email</button>
+        <a class="btn btn-ghost" href={profile.resume} target="_blank" rel="noopener"><Icon name="download" />Résumé</a>
+      </div>
+    </div>
+
+    <ul class="cards">
+      {
+        cards.map((c) => (
+          <li data-reveal>
+            <a class="contact card" href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
+              <span class="c-icon">
+                <Icon name={c.icon} />
+              </span>
+              <span class="c-text">
+                <small>{c.label}</small>
+                <b>{c.value}</b>
+              </span>
+              <Icon name="arrow-up-right" class="c-arrow" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <footer class="container foot">
+    <span>© {new Date().getFullYear()} {profile.name}</span>
+    <a href="#top">Back to top ↑</a>
+  </footer>
+</section>
+
+<style>
+  .box {
+    padding: clamp(32px, 6vw, 56px);
+    text-align: center;
+    overflow: hidden;
+    background:
+      radial-gradient(80% 120% at 50% 0%, rgba(124, 92, 255, 0.22), transparent 65%),
+      var(--surface);
+  }
+  .box .lead {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .contact {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+  }
+  .contact:hover {
+    transform: translateY(-3px);
+  }
+  .c-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(139, 124, 255, 0.14);
+    color: var(--accent-2);
+    flex: none;
+  }
+  .c-icon :global(svg) {
+    width: 18px;
+  }
+  .c-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .c-text small {
+    font-size: 12.5px;
+    color: var(--ink-mute);
+  }
+  .c-text b {
+    font-weight: 600;
+    font-size: 14.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .contact :global(.c-arrow) {
+    width: 16px;
+    margin-left: auto;
+    color: var(--ink-mute);
+    flex: none;
+    transition: transform 0.4s var(--ease-out), color 0.3s;
+  }
+  .contact:hover :global(.c-arrow) {
+    color: var(--ink);
+    transform: translate(2px, -2px);
+  }
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 56px;
+    padding-top: 22px;
+    padding-bottom: 28px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-mute);
+  }
+  .foot a:hover {
+    color: var(--ink);
+  }
+  @media (min-width: 640px) {
+    .cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1000px) {
+    .cards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

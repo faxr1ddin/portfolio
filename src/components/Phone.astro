@@ -1,0 +1,114 @@
+---
+// An iPhone-style frame. Everything inside sizes with container units (cqw),
+// so the mock scales cleanly from a 240px card to a 360px hero.
+interface Props {
+  class?: string;
+  label?: string;
+}
+const { class: cls, label = 'App preview' } = Astro.props;
+---
+
+<div class:list={['phone', cls]} role="img" aria-label={label}>
+  <div class="phone-btn phone-btn-a"></div>
+  <div class="phone-btn phone-btn-b"></div>
+  <div class="phone-btn phone-btn-c"></div>
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <div class="island"></div>
+      <div class="statusbar" aria-hidden="true">
+        <span>9:41</span>
+        <span class="sb-icons">
+          <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"></rect><rect x="5" y="5.5" width="3" height="6.5" rx="1"></rect><rect x="10" y="3" width="3" height="9" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1"></rect></svg>
+          <svg viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" fill="none" stroke="currentColor" opacity=".5"></rect><rect x="2" y="2" width="16" height="8" rx="2"></rect><rect x="23.5" y="4" width="1.8" height="4" rx="1" opacity=".5"></rect></svg>
+        </span>
+      </div>
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style>
+  .phone {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 19.4;
+    container-type: inline-size;
+    transform-style: preserve-3d;
+  }
+  .phone-frame {
+    position: absolute;
+    inset: 0;
+    padding: 3.2cqw;
+    border-radius: 15cqw;
+    background: linear-gradient(145deg, #3a3f4c, #15181f 40%, #2b2f39 70%, #0d0f14);
+    box-shadow:
+      inset 0 0 0 0.5cqw #4a4f5d,
+      inset 0 0 0 1.1cqw #0b0d12,
+      0 40px 80px -20px rgba(0, 0, 0, 0.7),
+      0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+  .phone-btn {
+    position: absolute;
+    width: 1.2cqw;
+    border-radius: 1cqw;
+    background: #2b2f39;
+  }
+  .phone-btn-a {
+    left: -0.8cqw;
+    top: 18%;
+    height: 6%;
+  }
+  .phone-btn-b {
+    left: -0.8cqw;
+    top: 27%;
+    height: 10%;
+  }
+  .phone-btn-c {
+    right: -0.8cqw;
+    top: 24%;
+    height: 14%;
+  }
+  .phone-screen {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 12cqw;
+    background: #f6f3ec;
+    color: #121826;
+    font-family: -apple-system, 'SF Pro Text', var(--font-sans);
+    font-size: 3.6cqw;
+    line-height: 1.3;
+  }
+  .island {
+    position: absolute;
+    top: 2.6cqw;
+    left: 50%;
+    z-index: 30;
+    width: 30cqw;
+    height: 8.6cqw;
+    margin-left: -15cqw;
+    border-radius: 6cqw;
+    background: #000;
+  }
+  .statusbar {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 13cqw;
+    padding: 1.5cqw 8cqw 0 10cqw;
+    font-size: 4cqw;
+    font-weight: 600;
+  }
+  .sb-icons {
+    display: flex;
+    gap: 1.4cqw;
+    align-items: center;
+  }
+  .sb-icons svg {
+    height: 3.2cqw;
+    width: auto;
+    fill: currentColor;
+  }
+</style>
